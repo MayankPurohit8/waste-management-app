@@ -27,25 +27,8 @@ A full-stack web application that allows users to report waste pickup requests a
 | **JWT** | JSON Web Token for user authentication |
 | **Multer / Cloudinary** | (Optional) For image uploads |
 
-## 📁 Folder Structure
-
-project-root/ ├── backend/ │ ├── controllers/ │ ├── models/ │ ├── routes/ │ ├── middleware/ │ ├── config/ │ ├── server.js │ └── .env ├── frontend/ │ ├── src/ │ └── public/ ├── .gitignore ├── README.md └── package.json
-
-## 🔐 Environment Variables
-
-Create a `.env` file in the backend folder with:
-
-PORT=5000 MONGO_URI=your_mongodb_connection_string JWT_SECRET=your_jwt_secret
-
-Make sure `.env` is included in `.gitignore`.
-
-
-
 📷 Screenshots
 
 
 🧑‍💻 Author
 Mayank Purohit / MayankPurohit8
-
-📄 License
-
