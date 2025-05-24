@@ -8,7 +8,7 @@ const wasteSchema = mongoose.Schema({
     enum: ["pending", "in progress", "completed"],
   },
   level: { type: Number, default: 1 },
-  img_url: { type: String, required: true },
+  img_url: { type: String },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
