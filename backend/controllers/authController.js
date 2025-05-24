@@ -30,7 +30,7 @@ const login = async (req) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      const verification = await bcrypt.compare(password, user.password);
+      const verification = await  bcrypt.compare(password, user.password);
       if (verification) {
         res.status().send("user Logged In");
       } else {
