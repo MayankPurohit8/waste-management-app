@@ -40,3 +40,9 @@ const deleteCleanupRequest = async (req, res) => {
       .json({ message: "Report deleted successfully", deletedReport });
   } catch (err) {}
 };
+
+module.exports = {
+  createCleanupRequest,
+  updateCleanupRequest,
+  deleteCleanupRequest,
+};

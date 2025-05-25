@@ -5,10 +5,10 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
-//connectDB();
+connectDB();
 
 app.get("/", function (req, res) {
-  res.send("Hello World!");
+  res.send("Waste Management App");
 });
 
 app.use("/api/auth", authRoutes);
