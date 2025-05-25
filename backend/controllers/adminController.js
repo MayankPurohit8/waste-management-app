@@ -1,7 +1,7 @@
 //can view all the waste requests
 //modify the request status
 //assign pickup to workers - advanced
-import WasteReport from "../models/wasteReport";
+const WasteReport = require("../models/wasteReport");
 const viewRequests = async (req, res) => {
   try {
     const reports = await WasteReport.find();

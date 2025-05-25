@@ -1,6 +1,6 @@
 // can get thier own profile from database
 //can get all the requests made till by the user
-import User from "../models/user";
+const User = require("../models/user");
 const getProfile = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.email });

@@ -3,7 +3,10 @@ const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
-
+const adminRoutes = require("./routes/adminRoutes");
+const userRoutes = require("./routes/userRoutes");
+const wasteRoutes = require("./routes/wasteRoutes");
+app.use(express.json());
 dotenv.config();
 connectDB();
 
@@ -12,5 +15,8 @@ app.get("/", function (req, res) {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/waste", wasteRoutes);
 
 app.listen(process.env.PORT);

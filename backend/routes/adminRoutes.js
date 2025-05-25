@@ -8,6 +8,6 @@ const {
 } = require("../controllers/adminController");
 
 router.get("/requests", viewRequests);
-router.out("/updateStatus", updateStatus);
+router.put("/updateStatus", updateStatus);
 
 module.exports = router;

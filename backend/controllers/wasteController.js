@@ -1,16 +1,19 @@
-import WasteReport from "../models/wasteReport";
+const WasteReport = require("../models/wasteReport");
 
 const createCleanupRequest = async (req, res) => {
   try {
-    const { address, level, created_by, created_at } = req.body;
+    const { address, level, created_by } = req.body;
     const newWasteReport = await WasteReport.create({
       address,
       level,
       created_by,
-      created_at,
     });
-    res.status(200).send("report created sucessfully");
-  } catch (err) {}
+    res.status(200).json({ message: "report created sucessfully" });
+  } catch (err) {
+    res.status(500).json({
+      message: `something happened while creating report : ${err.message}`,
+    });
+  }
 };
 const updateCleanupRequest = async (req, res) => {
   try {

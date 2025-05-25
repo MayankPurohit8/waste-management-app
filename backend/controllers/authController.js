@@ -1,9 +1,9 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
-const register = async (req) => {
+const register = async (req, res) => {
   try {
-    const { email, name, pno, password, admin } = req.body;
+    const { name, email, pno, password, admin } = req.body;
     const user = await User.findOne({ email: email });
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -15,29 +15,32 @@ const register = async (req) => {
         admin,
         password: hash,
       });
+      res.status(200).json({ message: "user registered sucessfully" });
     } else {
       res.status(400).send("User already registered");
     }
   } catch (err) {
-    res.status(500).send("Something went wrong while registering the user");
+    res.status(500).json({
+      message: `Something went wrong while registering the user ${err}`,
+    });
   }
 };
 
-const login = async (req) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email: email });
 
     if (user) {
-      const verification = await  bcrypt.compare(password, user.password);
+      const verification = await bcrypt.compare(password, user.password);
       if (verification) {
-        res.status().send("user Logged In");
+        res.status(200).json({ message: "user Logged In" });
       } else {
-        res.status.send("Incorrect Password");
+        res.status(404).json({ message: "Incorrect Password" });
       }
     } else {
-      res.status().send("Email is not registered");
+      res.status(404).json({ message: "Email is not registered" });
     }
   } catch (err) {
     res.status.send("Something went wrong while logging in user");
