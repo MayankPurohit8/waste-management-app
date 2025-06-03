@@ -1,3 +1,4 @@
+import { generateToken } from "../utils/generateToken";
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
@@ -35,7 +36,15 @@ const login = async (req, res) => {
     if (user) {
       const verification = await bcrypt.compare(password, user.password);
       if (verification) {
-        res.status(200).json({ message: "user Logged In" });
+        res
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Strict",
+            maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+          })
+          .status(200)
+          .json({ message: "Logged in successfully" });
       } else {
         res.status(404).json({ message: "Incorrect Password" });
       }
