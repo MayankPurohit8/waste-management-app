@@ -15,4 +15,4 @@ const requireAuth = (req, res, next) => {
   }
 };
 
-modules.export = requireAuth;
+module.exports = requireAuth;

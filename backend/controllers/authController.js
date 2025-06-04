@@ -1,4 +1,4 @@
-import { generateToken } from "../utils/generateToken";
+const generateToken = require("../utils/generateToken");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
@@ -9,7 +9,7 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     if (!user) {
-      const newUser = User.create({
+      const newUser = await User.create({
         name,
         email,
         pno,
@@ -36,6 +36,8 @@ const login = async (req, res) => {
     if (user) {
       const verification = await bcrypt.compare(password, user.password);
       if (verification) {
+        const token = generateToken(user._id);
+
         res
           .cookie("token", token, {
             httpOnly: true,
@@ -52,7 +54,9 @@ const login = async (req, res) => {
       res.status(404).json({ message: "Email is not registered" });
     }
   } catch (err) {
-    res.status.send("Something went wrong while logging in user");
+    res
+      .status(500)
+      .json({ message: `Something went wrong while logging in user ${err}` });
   }
 };
 

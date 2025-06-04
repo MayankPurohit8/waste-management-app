@@ -3,18 +3,22 @@
 const User = require("../models/user");
 const getProfile = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.email });
+    let user = await User.findOne({ email: req.body.email });
     if (user) {
       let userProfile = { name: user.name, email: user.email, phone: user.pno };
       res.status(200).json(userProfile);
     }
   } catch (err) {
-    console.log("something went wrong while retrieving the profile");
+    res.status(500).json({
+      message: `something went wrong while retrieving the profile ${err}`,
+    });
   }
 };
 const getAllRequests = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.email }).populate("reports");
+    let user = await User.findOne({ email: req.body.email }).populate(
+      "reports"
+    );
     if (user) {
       res.status(200).json(user.reports);
     }
