@@ -60,4 +60,19 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "Strict",
+      secure: true,
+    });
+    res.status(200).json({ message: "logged out successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "something went wrong while logging out user" });
+  }
+};
+
+module.exports = { register, login, logout };

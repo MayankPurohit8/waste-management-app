@@ -3,7 +3,7 @@
 const User = require("../models/user");
 const getProfile = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email });
+    let user = await User.findOne({ _id: req.id });
     if (user) {
       let userProfile = { name: user.name, email: user.email, phone: user.pno };
       res.status(200).json(userProfile);
@@ -16,9 +16,7 @@ const getProfile = async (req, res) => {
 };
 const getAllRequests = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email }).populate(
-      "reports"
-    );
+    let user = await User.findOne({ _id: req.id }).populate("reports");
     if (user) {
       res.status(200).json(user.reports);
     }
