@@ -53,7 +53,7 @@ const Login = ({ setUsername }) => {
       console.log("server Respone : ", res.data);
       await handleLogin();
       setUsername(res.data.name);
-      naviagate("/profile");
+      navigate("/profile");
     } catch (err) {
       toast.err(err.response.data.message);
     } finally {

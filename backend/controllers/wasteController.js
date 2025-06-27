@@ -2,14 +2,21 @@ const WasteReport = require("../models/wasteReport");
 
 const createCleanupRequest = async (req, res) => {
   try {
-    const { address, level, created_by } = req.body;
+    console.log("Request Body:", req.body);
+    console.log("Request File:", req.file);
+    console.log("User ID:", req.id);
+    const { address, level } = req.body;
+    const img_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const created_by = req.id;
     const newWasteReport = await WasteReport.create({
       address,
       level,
       created_by,
+      img_url,
     });
     res.status(200).json({ message: "report created sucessfully" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: `something happened while creating report : ${err.message}`,
     });
