@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 const RequestPickup = () => {
   const fileRef = useRef(null);
   const [address, setAddress] = useState("");
   const [filename, setFileName] = useState("");
   const [level, setLevel] = useState(1);
   const [file, setFile] = useState(null);
-  const formData = new FormData();
+
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -16,16 +17,23 @@ const RequestPickup = () => {
   };
   const handleSubmit = (e) => {
     try {
+      const formData = new FormData();
       formData.append("address", address);
       formData.append("level", level);
-      formData.append("image", file);
+      formData.append("file", file);
       e.preventDefault();
       let res = axios.post("http://localhost:5000/api/waste/create", formData, {
         withCredentials: true,
       });
-      console.log(res);
+      if (res.status === 200) {
+        toast.Slide("success");
+      }
+      setFile(null);
+      setFileName("");
+      fileRef.current.value = null;
+      toast.success("Request reported");
     } catch (err) {
-      console.log(res);
+      toast.error("Report not submitted");
     }
   };
 
@@ -114,7 +122,7 @@ const RequestPickup = () => {
               handleFile(e);
             }}
             ref={fileRef}
-            name="image"
+            name="file"
             className="hidden"
           />
         </div>

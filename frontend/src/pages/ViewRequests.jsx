@@ -1,4 +1,19 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 const ViewRequests = () => {
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    const getRequests = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/user/requests", {
+          withCredentials: true,
+        });
+        setRequests(res.data);
+      } catch (err) {}
+    };
+    getRequests();
+  }, []);
   const dummyRequests = [
     { id: 1, type: "Organic", status: "Scheduled", address: "22, Ashok Nagar" },
     {
@@ -15,17 +30,18 @@ const ViewRequests = () => {
         Your Pickup Requests
       </h2>
       <div className="space-y-4">
-        {dummyRequests.map((req) => (
-          <div key={req.id} className="bg-white p-4 rounded shadow-sm border">
+        {requests.map((req) => (
+          <div key={req._id} className="bg-white p-4 rounded shadow-sm border">
             <p>
-              <strong>Type:</strong> {req.type}
+              <strong>Address:</strong> {req.address}
+            </p>
+            <p>
+              <strong>Date:</strong> {req.created_at}
             </p>
             <p>
               <strong>Status:</strong> {req.status}
             </p>
-            <p>
-              <strong>Address:</strong> {req.address}
-            </p>
+            <p></p>
           </div>
         ))}
       </div>

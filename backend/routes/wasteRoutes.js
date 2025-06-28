@@ -24,7 +24,7 @@ const upload = multer({ storage: storage });
 router.post(
   "/create",
   requireAuth,
-  upload.single("image"),
+  upload.single("file"),
   createCleanupRequest
 );
 router.put("/update", updateCleanupRequest);

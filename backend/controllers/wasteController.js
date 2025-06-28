@@ -1,10 +1,7 @@
 const WasteReport = require("../models/wasteReport");
-
+const User = require("../models/user");
 const createCleanupRequest = async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    console.log("Request File:", req.file);
-    console.log("User ID:", req.id);
     const { address, level } = req.body;
     const img_url = req.file ? `/uploads/${req.file.filename}` : null;
     const created_by = req.id;
@@ -14,7 +11,9 @@ const createCleanupRequest = async (req, res) => {
       created_by,
       img_url,
     });
-    res.status(200).json({ message: "report created sucessfully" });
+    await User.findByIdAndUpdate(created_by, {
+      $push: { reports: newWasteReport._id },
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
