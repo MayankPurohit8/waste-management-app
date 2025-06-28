@@ -2,118 +2,184 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 const Profile = ({ setUsername }) => {
   const [user, setUser] = useState(null);
   const [requests, setRequests] = useState([]);
+  const [activeTab, setActiveTab] = useState("all"); // all or completed
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/user/profile", {
-          withCredentials: true,
-        });
 
-        const res2 = await axios.get(
-          "http://localhost:5000/api/user/requests",
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profileRes = await axios.get(
+          "http://localhost:5000/api/user/profile",
           {
             withCredentials: true,
           }
         );
 
-        setUser(res.data);
-        setRequests(res2.data);
-
-        localStorage.setItem("username", res.data.name);
+        const requestRes = await axios.get(
+          "http://localhost:5000/api/user/requests",
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(requestRes.data);
+        setUser(profileRes.data);
+        setRequests(requestRes.data);
+        localStorage.setItem("username", profileRes.data.name);
       } catch (err) {
-        if (err.response.status === 401) {
-          toast.error("Session Expired");
+        if (err.response?.status === 401) {
+          toast.error("Session expired. Please login again.");
           navigate("/login");
+        } else {
+          toast.error("Failed to load profile.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfile();
+    fetchData();
   }, []);
 
   const handleLogout = async () => {
     try {
-      setLoading(true);
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/user/logout",
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      toast.success(res.data.message);
       localStorage.removeItem("username");
       setUsername("");
       navigate("/login");
+      toast.success("Logged out successfully.");
     } catch (err) {
-      toast.error("something went wrong");
+      toast.error("Logout failed.");
     }
   };
 
+  const filteredRequests =
+    activeTab === "completed"
+      ? requests.filter((req) => req.status === "completed")
+      : requests;
+
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <p className="text-gray-700 text-lg">Loading Profile...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-500 text-lg">Loading profile...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[80vh] p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Your Profile</h2>
+    <div className="min-h-screen bg-gray-50 px-4 py-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Profile Info */}
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            Your Profile
+          </h2>
+          <div className="space-y-3 text-gray-700">
+            <p>
+              <span className="font-semibold">Name:</span> {user.name}
+            </p>
+            <p>
+              <span className="font-semibold">Email:</span> {user.email}
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span> {user.phone}
+            </p>
+          </div>
 
-      <div className="bg-white shadow rounded p-4 mb-8">
-        <p>
-          <strong>Name:</strong> {user?.name}
-        </p>
-        <p>
-          <strong>Email:</strong> {user?.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {user?.phone}
-        </p>
+          <button
+            onClick={handleLogout}
+            className="mt-8 w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Requests */}
+        <div className="md:col-span-2">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Pickup Requests
+            </h2>
+            <div className="space-x-2">
+              <button
+                onClick={() => setActiveTab("all")}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  activeTab === "all"
+                    ? "bg-gray-800 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setActiveTab("completed")}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  activeTab === "completed"
+                    ? "bg-gray-800 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Completed
+              </button>
+            </div>
+          </div>
+
+          {filteredRequests.length === 0 ? (
+            <div className="bg-white border rounded-lg p-6 text-center text-gray-500">
+              No {activeTab} pickup requests found.
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2">
+              {filteredRequests.map((req) => (
+                <div
+                  key={req._id}
+                  className="bg-white rounded-lg shadow p-4 flex flex-col"
+                >
+                  <img
+                    src={`http://localhost:5000${req.img_url}`}
+                    alt="Waste"
+                    className="w-full h-40 object-cover rounded mb-3 border"
+                    onError={(e) => (e.target.src = "/default-image.jpg")}
+                  />
+
+                  <div className="flex-1 text-sm space-y-1 text-gray-700">
+                    <p>
+                      <span className="font-semibold">Address:</span>{" "}
+                      {req.address}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Date:</span>{" "}
+                      {new Date(req.created_at).toLocaleString()}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Status:</span>{" "}
+                      <span
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-semibold text-white ${
+                          req.status === "pending"
+                            ? "bg-yellow-500"
+                            : req.status === "completed"
+                            ? "bg-green-600"
+                            : "bg-gray-500"
+                        }`}
+                      >
+                        {req.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
-      <h3 className="text-xl font-semibold mb-3 text-gray-800">
-        Pickup Requests
-      </h3>
-      {requests.length === 0 ? (
-        <p className="text-gray-600">No pickup requests made yet.</p>
-      ) : (
-        <ul className="space-y-4">
-          {requests.map((req, idx) => (
-            <li
-              key={req._id || idx}
-              className="bg-gray-50 p-4 rounded border border-gray-200"
-            >
-              <p>
-                <strong>Address:</strong> {req.address}
-              </p>
-              <p>
-                <strong>Date:</strong>{" "}
-                {new Date(req.createdAt).toLocaleString()}
-              </p>
-              <p>
-                <strong>Status:</strong> {req.status}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-      <input
-        type="button"
-        value="Logout"
-        className="bg-red-400 px-3 py-2 rounded-2xl mt-4 text-white text-xl"
-        onClick={() => handleLogout()}
-      />
     </div>
   );
 };

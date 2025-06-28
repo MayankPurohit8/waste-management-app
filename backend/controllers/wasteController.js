@@ -14,9 +14,10 @@ const createCleanupRequest = async (req, res) => {
     await User.findByIdAndUpdate(created_by, {
       $push: { reports: newWasteReport._id },
     });
+    return res.status(200).json({ message: "request Submitted" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({
+    return res.status(500).json({
       message: `something happened while creating report : ${err.message}`,
     });
   }
