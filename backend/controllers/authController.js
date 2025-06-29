@@ -13,7 +13,6 @@ const register = async (req, res) => {
         name,
         email,
         pno,
-        admin,
         password: hash,
       });
       res

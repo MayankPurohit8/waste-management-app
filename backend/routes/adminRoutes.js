@@ -5,9 +5,11 @@ const router = require("express").Router();
 const {
   viewRequests,
   updateStatus,
+  deleteRequest,
 } = require("../controllers/adminController");
-
-router.get("/requests", viewRequests);
-router.put("/updateStatus", updateStatus);
+const verifyAdmin = require("../middlewares/verifyAdmin");
+router.get("/requests", verifyAdmin, viewRequests);
+router.put("/updateStatus", verifyAdmin, updateStatus);
+router.delete("/deleteRequest/:id", verifyAdmin, deleteRequest);
 
 module.exports = router;

@@ -1,10 +1,11 @@
 const express = require("express");
 const path = require("path");
+const bcrypt = require("bcrypt");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-
+const User = require("./models/user");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");

@@ -37,7 +37,7 @@ const Navbar = ({ username }) => {
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         {/* Logo + Brand */}
-        <div className="flex items-center space-x-3 text-xl font-bold text-green-700">
+        <div className="flex items-center  text-xl font-bold text-green-700">
           <img src={logo} alt="SafaiSetu Logo" className="h-20 w-auto" />
           <span className="text-gray-800">SafaiSetu</span>
         </div>

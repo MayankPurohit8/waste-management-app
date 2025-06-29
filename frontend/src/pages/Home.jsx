@@ -24,6 +24,9 @@ const Home = ({ username }) => (
             Track Requests
           </a>
         </div>
+        <a href="/login" className="text-gray-600 max-w-xl mt-6 text-base">
+          Login/Signup to Continue!
+        </a>
       </div>
       <div className="w-full md:w-1/2">
         <img src={heroImage} alt="" />
