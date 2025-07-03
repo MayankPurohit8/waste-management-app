@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import Admin from "./pages/admin";
+import UpdateRequest from "./pages/UpdateRequest";
 function App() {
   const [username, setUsername] = useState(
     localStorage.getItem("username") || ""
@@ -29,6 +30,7 @@ function App() {
 
           <Route path="/login" element={<Login setUsername={setUsername} />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/update" element={<UpdateRequest />} />
         </Routes>
         <Footer />
         <ToastContainer position="top-right" autoClose={3000} />

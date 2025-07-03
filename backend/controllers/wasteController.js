@@ -24,16 +24,19 @@ const createCleanupRequest = async (req, res) => {
 };
 const updateCleanupRequest = async (req, res) => {
   try {
-    const id = req.params;
-    const { level, address } = req.body;
+    const { level, address, id } = req.body;
     const updatedWasteReport = await WasteReport.findByIdAndUpdate(id, {
       level,
       address,
     });
+
+    const reports = await WasteReport.find();
     if (!updatedWasteReport) {
-      return res.status(404).json({ message: "Waste report not found" });
+      return res
+        .status(404)
+        .json({ message: "Waste report not found", out: reports });
     }
-    return res.status(200);
+    return res.status(200).json({ message: "updated successfully" });
   } catch (err) {}
 };
 const deleteCleanupRequest = async (req, res) => {

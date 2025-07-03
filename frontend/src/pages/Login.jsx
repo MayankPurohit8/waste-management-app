@@ -23,8 +23,13 @@ const Login = ({ setUsername }) => {
         { email, password },
         { withCredentials: true }
       );
+
       toast.success(res.data.message);
       setUsername(res.data.name);
+      if (res.data.admin === true) {
+        navigate("/admin");
+        return;
+      }
       navigate("/profile");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");

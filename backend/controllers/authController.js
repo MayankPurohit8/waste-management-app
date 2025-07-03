@@ -15,9 +15,11 @@ const register = async (req, res) => {
         pno,
         password: hash,
       });
-      res
-        .status(200)
-        .json({ message: "user registered sucessfully", name: newUser.name });
+      res.status(200).json({
+        message: "user registered sucessfully",
+        name: newUser.name,
+        admin: newUser.admin,
+      });
     } else {
       res.status(400).send("User already registered");
     }
@@ -47,7 +49,11 @@ const login = async (req, res) => {
             maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
           })
           .status(200)
-          .json({ message: "Logged in successfully", name: user.name });
+          .json({
+            message: "Logged in successfully",
+            name: user.name,
+            admin: user.admin,
+          });
       } else {
         res.status(404).json({ message: "Incorrect Password" });
       }

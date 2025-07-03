@@ -27,7 +27,7 @@ router.post(
   upload.single("file"),
   createCleanupRequest
 );
-router.put("/update", updateCleanupRequest);
-router.delete("/delete", deleteCleanupRequest);
+router.put("/update", requireAuth, updateCleanupRequest);
+router.delete("/delete", requireAuth, deleteCleanupRequest);
 
 module.exports = router;
