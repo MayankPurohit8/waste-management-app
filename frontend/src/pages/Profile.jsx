@@ -73,16 +73,18 @@ const Profile = ({ setUsername }) => {
       return;
     }
     try {
+      setLoading(true);
       const res = await axios.put(
         "http://localhost:5000/api/waste/update",
         { address, level, id },
         { withCredentials: true }
       );
-      console.log(res);
-      setRequests(res.body.out);
+      setRequests(res.data.reports);
       setUpdating(false);
+      setLoading(false);
+      toast.success(res.data.message);
     } catch (err) {
-      toast.error("Failed to update request.");
+      toast.error("Failed to update request.", err.message);
       setUpdating(false);
     }
   };
@@ -90,7 +92,7 @@ const Profile = ({ setUsername }) => {
   const filteredRequests =
     activeTab === "completed"
       ? requests.filter((req) => req.status === "completed")
-      : requests;
+      : requests.filter((req) => req.status != "completed");
 
   if (loading) {
     return (
@@ -228,7 +230,7 @@ const Profile = ({ setUsername }) => {
           </div>
 
           {filteredRequests.length === 0 ? (
-            <div className="bg-white border rounded-lg p-6 text-center text-gray-500">
+            <div className="bg-white  rounded-lg p-6 text-center text-gray-500">
               No {activeTab} pickup requests found.
             </div>
           ) : (
@@ -241,41 +243,51 @@ const Profile = ({ setUsername }) => {
                   <img
                     src={`http://localhost:5000${req.img_url}`}
                     alt="Waste"
-                    className="w-full h-40 object-cover rounded mb-3 border"
-                    onError={(e) => (e.target.src = "/default-image.jpg")}
+                    className={
+                      req.status == "completed"
+                        ? "w-full h-40 object-cover rounded mb-3 border filter grayscale"
+                        : "w-full h-40 object-cover rounded mb-3 border "
+                    }
                   />
 
-                  <div className="flex-1 text-sm space-y-1 text-gray-700">
-                    <p>
-                      <span className="font-semibold">Address:</span>{" "}
-                      {req.address}
-                    </p>
-                    <p>
-                      <span className="font-semibold">Date:</span>{" "}
-                      {new Date(req.created_at).toLocaleString()}
-                    </p>
-                    <p>
-                      <span className="font-semibold">Status:</span>{" "}
-                      <span
-                        className={`inline-block px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                          req.status === "pending"
-                            ? "bg-yellow-500"
-                            : req.status === "completed"
-                            ? "bg-green-600"
-                            : "bg-gray-500"
-                        }`}
-                      >
-                        {req.status}
-                      </span>
-                    </p>
+                  <div className=" text-sm space-y-1 text-gray-700 flex justify-between">
+                    <div>
+                      <p>
+                        <span className="font-semibold">Address:</span>{" "}
+                        {req.address}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Date:</span>{" "}
+                        {new Date(req.created_at).toLocaleString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Status:</span>{" "}
+                        <span
+                          className={`inline-block px-2 py-1 rounded-full text-xs font-semibold text-white ${
+                            req.status === "pending"
+                              ? "bg-yellow-500"
+                              : req.status === "completed"
+                              ? "bg-green-600"
+                              : "bg-gray-500"
+                          }`}
+                        >
+                          {req.status}
+                        </span>
+                      </p>
+                    </div>
+
                     {req.status != "pending" ? null : (
                       <button
+                        className="hover:text-black text-gray-400 flex flex-col justify-center items-center gap-2.5 relative hover:[&>div]:block transition cursor-pointer "
                         onClick={() => {
                           setId(req._id);
                           setUpdating(true);
                         }}
                       >
                         <Edit />
+                        <div className="border px-2 rounded-xl absolute top-12 hidden">
+                          edit
+                        </div>
                       </button>
                     )}
                   </div>
